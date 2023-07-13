@@ -11,7 +11,7 @@
                 </a>
 
                 <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                    <span class="text-dark">Charles Hall</span>
+                    <span class="text-dark"><?php echo $_SESSION['user']['name'] ?></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
                     <a class="dropdown-item" href="./logout.php">Log out</a>

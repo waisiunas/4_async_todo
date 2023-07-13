@@ -158,7 +158,59 @@ if (!isset($_SESSION['user']) && empty($_SESSION['user'])) {
 		}
 
 		function editTask(id) {
-			console.log('I will edit' + id);
+			const btnEditElement = document.getElementById('edit-' + id);
+			const taskElement = document.getElementById('task-' + id);
+
+			let taskValue = taskElement.value;
+
+			if (btnEditElement.innerText == "Edit") {
+				btnEditElement.innerText = "Save";
+				taskElement.removeAttribute('readonly');
+				taskElement.focus();
+				taskElement.setSelectionRange(taskValue.length, taskValue.length);
+			} else {
+
+				errorElement.innerHTML = "";
+				taskElement.classList.remove('is-invalid');
+
+				if (taskValue == "") {
+					taskElement.classList.add('is-invalid');
+					errorElement.innerHTML = alert('danger', 'Please provide the task!');
+				} else {
+					const data = {
+						text: taskValue,
+						id: id,
+						submit: 1,
+					};
+
+					fetch('./edit-task.php', {
+							method: 'POST',
+							body: JSON.stringify(data),
+							headers: {
+								'Content-Type': 'application.json'
+							}
+						})
+						.then(function(response) {
+							return response.json();
+						})
+						.then(function(result) {
+							if (result.taskError) {
+								taskElement.classList.add('is-invalid');
+								errorElement.innerHTML = alert('danger', result.taskError);
+							} else if (result.error) {
+								errorElement.innerHTML = alert('danger', result.error);
+							} else if (result.success) {
+								errorElement.innerHTML = alert('success', result.success);
+								addFormElement.reset();
+								showTasks();
+							} else {
+								errorElement.innerHTML = alert('danger', 'Something went wrong!');
+							}
+							btnEditElement.innerText = "Edit";
+							taskElement.setAttribute('readonly', true);
+						})
+				}
+			}
 		}
 
 		function deleteTask(id) {
